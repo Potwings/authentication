@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 수정</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 200px;
+      resize: vertical;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .readonly-field {
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+<h1>게시글 수정</h1>
+
+<form th:action="@{/board/{id}/edit(id=${boardId})}" th:object="${boardRequestDto}" method="post">
+  <div class="form-group">
+    <label for="title">제목</label>
+    <input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요">
+    <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></div>
+  </div>
+
+  <div class="form-group">
+    <label for="writer">작성자</label>
+    <input type="text" id="writer" th:field="*{writer}" readonly class="readonly-field">
+    <div th:if="${#fields.hasErrors('writer')}" th:errors="*{writer}" class="error"></div>
+  </div>
+
+  <div class="form-group">
+    <label for="content">내용</label>
+    <textarea id="content" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
+    <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="error"></div>
+  </div>
+
+  <div>
+    <button type="submit" class="btn btn-primary">수정</button>
+    <a th:href="@{/board/{id}(id=${boardId})}" class="btn btn-secondary">취소</a>
+  </div>
+</form>
+</body>
+</html>

